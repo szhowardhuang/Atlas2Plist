@@ -14,18 +14,19 @@ import java.util.Scanner;
 import util.Atlas2Plist;
 
 /**
- * Compatible with libgdx texture packer 3.2.0 & java 7+
+ * Compatible with libgdx texture packer 3.2.0+ & java 7+
  * 
  * @author Sergio
  *
  */
 public class Main {
+	
 	private final static Charset ENCODING = StandardCharsets.UTF_8;
 
 	public static void main(String[] args) {
 		if (args == null || args.length == 0) {
 			System.out
-					.println("Usage: java -jar <filename>.atlast in order to get <filename>.plist");
+					.println("Usage: java -jar Atlas2Plist.jar <filename>.atlas");
 		} else {
 			new Main().run(args[0]);
 		}
@@ -34,12 +35,11 @@ public class Main {
 
 	private void run(String arg) {
 		try {
-			List<String> result = new Atlas2Plist(readTextFile(arg)).getPlist();
-			
-			writerTextFile(arg.replace(".atlas", ".plist"),result);
+			Atlas2Plist formater = new Atlas2Plist(readTextFile(arg));
+			List<String> result = formater.getPlist();
+			writerTextFile(arg.replace(".atlas", ".plist"), result);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 
 	}
@@ -50,22 +50,22 @@ public class Main {
 		try (Scanner scanner = new Scanner(path, ENCODING.name())) {
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				if(line != null && !line.equals("")){
+				if (line != null && !line.equals("")) {
 					file.add(line);
 				}
 			}
 		}
 		return file;
 	}
-	
+
 	void writerTextFile(String fileName, List<String> lines) throws IOException {
-	    Path path = Paths.get(fileName);
-	    try (BufferedWriter writer = Files.newBufferedWriter(path, ENCODING)){
-	      for(String line : lines){
-	        writer.write(line);
-	        writer.newLine();
-	      }
-	    }
-	  }
+		Path path = Paths.get(fileName);
+		try (BufferedWriter writer = Files.newBufferedWriter(path, ENCODING)) {
+			for (String line : lines) {
+				writer.write(line);
+				writer.newLine();
+			}
+		}
+	}
 
 }
